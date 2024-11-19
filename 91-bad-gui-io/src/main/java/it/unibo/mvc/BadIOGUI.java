@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
+import static javax.swing.BoxLayout.X_AXIS;
 
 /**
  * This class is a simple application that writes a random number on a file.
@@ -43,8 +45,31 @@ public class BadIOGUI {
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Write on file");
         canvas.add(write, BorderLayout.CENTER);
-        frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        final JPanel myPanel = new JPanel();
+        final BoxLayout myBox = new BoxLayout(myPanel, X_AXIS);
+        myPanel.setLayout(myBox);
+        frame.setContentPane(myPanel);
+        myPanel.add(write);
+
+        final JButton read = new JButton("Read on file");
+        myPanel.add(read);
+        read.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    final List<String> numers = Files.readAllLines(Path.of(PATH));
+                    System.out.println(numers);
+                } catch(IOException exception){
+                    exception.printStackTrace();
+                }
+                
+                System.out.println("Read");
+            }
+
+        });
         /*
          * Handlers
          */
@@ -81,6 +106,7 @@ public class BadIOGUI {
         final int sw = (int) screen.getWidth();
         final int sh = (int) screen.getHeight();
         frame.setSize(sw / PROPORTION, sh / PROPORTION);
+        frame.pack();
         /*
          * Instead of appearing at (0,0), upper left corner of the screen, this
          * flag makes the OS window manager take care of the default positioning
